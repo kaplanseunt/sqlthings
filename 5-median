@@ -1,0 +1,24 @@
+SELECT
+top 1
+    CAST(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY LAT_N) OVER () AS DECIMAL(18, 4)) AS Median
+FROM
+    station;
+
+
+#######################################
+
+WITH OrderedData AS (
+    SELECT
+        YourColumn,
+        ROW_NUMBER() OVER (ORDER BY YourColumn) AS RowAsc,
+        ROW_NUMBER() OVER (ORDER BY YourColumn DESC) AS RowDesc
+    FROM
+        YourTable
+)
+
+SELECT
+    AVG(YourColumn * 1.0) AS Median
+FROM
+    OrderedData
+WHERE
+    RowAsc IN ((RowAsc + RowDesc) / 2, (RowAsc + RowDesc + 1) / 2);
