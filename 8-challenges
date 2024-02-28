@@ -1,0 +1,11 @@
+With CTE as (
+    Select c.hacker_id , h.name , 
+    count(challenge_id) as challenges_created 
+    FROM Hackers h INNER JOIN Challenges c ON h.hacker_id = c.hacker_id 
+    GROUP BY c.hacker_id , h.name)
+
+select * from CTE
+where challenges_created not in (select challenges_created from CTE
+                    where challenges_created not in (select max(challenges_created) from CTE)
+                   group by challenges_created
+                   having count(*) > 1) ORDER BY challenges_created DESC, hacker_id ASC
