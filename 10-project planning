@@ -1,0 +1,11 @@
+select MIN(b.Start_Date), MAX(b.End_Date) from
+    (
+    select *,
+    sum (case when (a.previous_end_date >= a.Start_Date) then 0 else 1 end) over (order by a.rn) as grup from
+        (
+        select ROW_NUMBER() over(order by Start_Date,End_Date) as RN, 
+        Start_Date, End_Date, 
+        LAG(End_Date,1) over(order by End_Date) as previous_end_date from Projects
+        ) a
+    ) b
+group by grup order by DATEDIFF(day,min(b.Start_Date), MAX(b.End_Date)) asc, MIN(b.Start_Date) asc
