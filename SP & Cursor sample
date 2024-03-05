@@ -1,0 +1,26 @@
+
+CREATE PROCEDURE ProcessEmployees
+AS
+BEGIN
+    DECLARE @EmployeeID INT;
+    DECLARE @FirstName NVARCHAR(50);
+    DECLARE @LastName NVARCHAR(50);
+
+    DECLARE employee_cursor CURSOR FOR
+    SELECT EmployeeID, FirstName, LastName FROM Employees;
+
+    OPEN employee_cursor;
+
+    FETCH NEXT FROM employee_cursor INTO @EmployeeID, @FirstName, @LastName;
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        -- Burada cursor üzerinden işlemler yazılabilir
+        PRINT 'EmployeeID: ' + CAST(@EmployeeID AS NVARCHAR(10)) + ', Name: ' + @FirstName + ' ' + @LastName;
+
+        FETCH NEXT FROM employee_cursor INTO @EmployeeID, @FirstName, @LastName;
+    END;
+
+    CLOSE employee_cursor;
+    DEALLOCATE employee_cursor;
+END;
