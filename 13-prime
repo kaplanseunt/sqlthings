@@ -1,0 +1,15 @@
+WITH  prime AS (
+    SELECT 2 AS asal
+    UNION ALL
+    SELECT p.asal + 1 AS val
+    FROM prime p
+    WHERE p.asal < 100
+)
+
+SELECT asal  AS result
+FROM prime p
+WHERE NOT EXISTS (
+    SELECT 1 FROM prime p2
+    WHERE p.asal % p2.asal = 0
+    AND p.asal != p2.asal
+);
